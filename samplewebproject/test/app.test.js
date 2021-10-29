@@ -1,0 +1,38 @@
+const assert = require('assert');
+const path = require('path');
+const render = require('../../render');
+
+it('has a text input', async () => {
+  const dom = await render(path.join(__dirname, '..', 'index.html'), true);
+
+  const input = dom.window.document.querySelector('input');
+
+  assert(input);
+});
+
+it('shows a success message with a valid email', async () => {
+  const dom = await render(path.join(__dirname, '..', 'index.html'), true);
+  const input = dom.window.document.querySelector('input');
+  input.value = 'adada@asasd.com';
+
+  dom.window.document
+    .querySelector('form')
+    .dispatchEvent(new dom.window.Event('submit'));
+
+  const h1 = dom.window.document.querySelector('h1');
+
+  assert.strictEqual(h1.innerHTML, 'Looks good!');
+});
+
+it('shows an error message with an invalid email', async () => {
+  const dom = await render(path.join(__dirname, '..', 'index.html'), true);
+  const input = dom.window.document.querySelector('input');
+  input.value = 'adad';
+  dom.window.document
+    .querySelector('form')
+    .dispatchEvent(new dom.window.Event('submit'));
+
+  const h1 = dom.window.document.querySelector('h1');
+
+  assert.strictEqual(h1.innerHTML, 'Invalid email');
+});
